@@ -20,9 +20,9 @@ Diesel is the single largest variable cost for US trucking carriers. Retail dies
 
 ## Live demo
 
-Live [dashboard](https://brunofurtado.dev/en/projects/diesel-monitor/), refreshed weekly by this pipeline.
+Live <a href="https://brunofurtado.dev/en/projects/diesel-monitor/" target="_blank" rel="noopener noreferrer">dashboard</a>, refreshed weekly by this pipeline.
 
-[![Diesel Monitor dashboard](./docs/diesel-monitor.webp)](https://brunofurtado.dev/en/projects/diesel-monitor/)
+<a href="https://brunofurtado.dev/en/projects/diesel-monitor/" target="_blank" rel="noopener noreferrer"><img src="./docs/diesel-monitor.webp" alt="Diesel Monitor dashboard"></a>
 
 ## What it shows
 
