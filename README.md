@@ -2,7 +2,7 @@
 
   ![cover](./docs/cover.webp)
 
-![Spark](https://img.shields.io/badge/compute-Apache_Spark-8B5CF6?style=flat) ![Delta Lake](https://img.shields.io/badge/storage-Delta_Lake-3B82F6?style=flat) ![Docker](https://img.shields.io/badge/runtime-Docker-3B82F6?style=flat) ![GitHub Actions](https://img.shields.io/badge/orchestration-GitHub_Actions-F97316?style=flat) ![pytest](https://img.shields.io/badge/tests-pytest-10B981?style=flat) ![Firebase](https://img.shields.io/badge/serving-Firebase_Hosting-F97316?style=flat) ![Python](https://img.shields.io/badge/lang-Python-EAB308?style=flat) ![SQL](https://img.shields.io/badge/lang-SQL-EAB308?style=flat)
+![Spark](https://img.shields.io/badge/compute-Apache_Spark-8B5CF6?style=flat) ![Delta Lake](https://img.shields.io/badge/storage-Delta_Lake-3B82F6?style=flat) ![Docker](https://img.shields.io/badge/runtime-Docker-3B82F6?style=flat) ![GitHub Actions](https://img.shields.io/badge/orchestration-GitHub_Actions-F97316?style=flat) ![pytest](https://img.shields.io/badge/tests-pytest-10B981?style=flat) ![Python](https://img.shields.io/badge/lang-Python-EAB308?style=flat) ![SQL](https://img.shields.io/badge/lang-SQL-EAB308?style=flat)
 
 ![Pipeline](https://github.com/Bruno-Furtado/trucking-cost-pipeline/actions/workflows/pipeline.yml/badge.svg)
 
