@@ -18,6 +18,12 @@ PySpark + Delta Lake pipeline that ingests 25 years of WTI and US diesel prices,
 
 Diesel is the single largest variable cost for US trucking carriers. Retail diesel prices follow WTI crude with a delay, but the exact lag and the magnitude of pass-through are not constants. This pipeline answers three concrete questions: how have the two prices moved together over 25 years, how many days does diesel lag WTI, and which historical events produced the largest 4-week price shocks.
 
+## Live demo
+
+Live dashboard at **[brunofurtado.dev/projects/diesel-monitor](https://brunofurtado.dev/projects/diesel-monitor)**, refreshed weekly by this pipeline.
+
+[![Diesel Monitor dashboard](./docs/diesel-monitor.webp)](https://brunofurtado.dev/projects/diesel-monitor)
+
 ## What it shows
 
 **Price timeline.** Daily WTI (yfinance) joined to weekly retail diesel (EIA), forward-filled to a daily grid covering 25 years. Output is a single tidy table consumed by a dual-axis chart.
