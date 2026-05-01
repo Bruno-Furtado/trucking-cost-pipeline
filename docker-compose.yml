@@ -1,0 +1,15 @@
+services:
+  pipeline:
+    build: .
+    volumes:
+      - .:/app
+      - ./data:/data
+      - ivy-cache:/root/.ivy2
+    env_file:
+      - path: .env
+        required: false
+    tty: true
+    stdin_open: true
+
+volumes:
+  ivy-cache:

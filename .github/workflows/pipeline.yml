@@ -1,0 +1,142 @@
+name: Pipeline weekly run
+
+on:
+  schedule:
+    - cron: '0 15 * * 2'  # Tuesdays at 15:00 UTC = 11:00 ET (DST)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pipeline-${{ github.workflow }}
+  cancel-in-progress: false
+
+env:
+  PYTHON_VERSION: '3.11'
+  JAVA_VERSION: '17'
+  DATA_ROOT: /tmp/trucking-data
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout trucking-cost-pipeline
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Cache Ivy dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.ivy2
+          key: ivy2-${{ runner.os }}-${{ hashFiles('pyproject.toml') }}
+          restore-keys: |
+            ivy2-${{ runner.os }}-
+
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: pip-${{ runner.os }}-${{ hashFiles('pyproject.toml') }}
+          restore-keys: |
+            pip-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: Setup data directory
+        run: mkdir -p "${DATA_ROOT}"
+
+      - name: Run tests
+        run: pytest tests/ -v
+
+      - name: Run pipeline (bronze -> silver -> gold -> export)
+        env:
+          EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
+        run: |
+          python -m pipeline.bronze
+          python -m pipeline.silver
+          python -m pipeline.gold
+          python -m pipeline.export
+
+      - name: Validate outputs
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+
+          exports = Path(os.environ["DATA_ROOT"]) / "exports"
+          required = ["manifest.json", "price_timeline.json", "wti_diesel_lag.json", "fuel_shocks.json"]
+
+          for name in required:
+              path = exports / name
+              assert path.exists(), f"Missing: {name}"
+              data = json.loads(path.read_text())
+              assert data, f"Empty: {name}"
+              print(f"OK: {name} ({path.stat().st_size} bytes)")
+
+          tl = json.loads((exports / "price_timeline.json").read_text())
+          assert isinstance(tl, list) and len(tl) > 5000, f"price_timeline suspicious: {len(tl)} entries"
+
+          shocks = json.loads((exports / "fuel_shocks.json").read_text())
+          assert isinstance(shocks, list) and len(shocks) == 10, f"fuel_shocks not 10: {len(shocks)}"
+
+          print("All validations passed.")
+          PY
+
+      - name: Validate data freshness
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from datetime import date
+          from pathlib import Path
+
+          manifest_path = Path(os.environ["DATA_ROOT"]) / "exports" / "manifest.json"
+          manifest = json.loads(manifest_path.read_text())
+          data_through = date.fromisoformat(manifest["data_through"])
+
+          days_old = (date.today() - data_through).days
+          assert days_old <= 7, f"Data is {days_old} days old (data_through={data_through}). Pipeline may have stale sources."
+          print(f"Data freshness OK: {days_old} days old")
+          PY
+
+      - name: Checkout personal-page
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/personal-page
+          token: ${{ secrets.PERSONAL_PAGE_PAT }}
+          path: personal-page
+
+      - name: Copy exports to personal-page
+        run: |
+          mkdir -p personal-page/public/data/trucking-cost
+          cp "${DATA_ROOT}"/exports/*.json personal-page/public/data/trucking-cost/
+
+      - name: Commit and push if changed
+        working-directory: personal-page
+        run: |
+          git config user.name "trucking-cost-pipeline-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add public/data/trucking-cost/
+          if git diff --staged --quiet; then
+            echo "No changes to commit."
+          else
+            DATA_THROUGH=$(python -c "import json; print(json.load(open('public/data/trucking-cost/manifest.json'))['data_through'])")
+            git commit -m "data: update trucking-cost data through ${DATA_THROUGH}"
+            git push
+          fi
