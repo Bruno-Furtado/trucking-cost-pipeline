@@ -12,6 +12,7 @@ from pipeline.config import (
     FUEL_SHOCKS_GOLD_PATH,
 )
 from pipeline.spark_session import get_spark
+from pipeline.status import compute_diesel_status
 
 
 def _write_json_array(records: list, output_file: Path) -> None:
@@ -78,6 +79,24 @@ def export_fuel_shocks(spark) -> dict:
     return stats
 
 
+def export_diesel_status(spark) -> dict:
+    df = spark.read.format("delta").load(PRICE_TIMELINE_GOLD_PATH).orderBy("date")
+    pdf = df.toPandas()
+
+    status = compute_diesel_status(pdf)
+
+    output_file = Path(EXPORTS_PATH) / "diesel_status.json"
+    output_file.write_text(json.dumps(status, separators=(",", ":")))
+
+    stats = {
+        "as_of_date": status["as_of_date"],
+        "regime": status["regime"],
+        "regime_segments": len(status["regime_history"]),
+    }
+    print(f"Exported diesel_status: {stats}")
+    return stats
+
+
 def write_manifest(stats: dict, data_through: str, output_dir: str = EXPORTS_PATH) -> Path:
     manifest = {
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z"),
@@ -98,6 +117,7 @@ if __name__ == "__main__":
         "price_timeline": export_price_timeline(spark),
         "wti_diesel_lag": export_wti_diesel_lag(spark),
         "fuel_shocks": export_fuel_shocks(spark),
+        "diesel_status": export_diesel_status(spark),
     }
 
     data_through = stats["price_timeline"]["max_date"]
