@@ -1,8 +1,18 @@
-# Trucking Cost Intelligence
+<div align="center">
+
+  ![cover](./docs/cover.webp)
+
+![Spark](https://img.shields.io/badge/compute-Apache_Spark-8B5CF6?style=flat) ![Delta Lake](https://img.shields.io/badge/storage-Delta_Lake-3B82F6?style=flat) ![Docker](https://img.shields.io/badge/runtime-Docker-3B82F6?style=flat) ![GitHub Actions](https://img.shields.io/badge/orchestration-GitHub_Actions-F97316?style=flat) ![pytest](https://img.shields.io/badge/tests-pytest-10B981?style=flat) ![Firebase](https://img.shields.io/badge/serving-Firebase_Hosting-F97316?style=flat) ![Python](https://img.shields.io/badge/lang-Python-EAB308?style=flat) ![SQL](https://img.shields.io/badge/lang-SQL-EAB308?style=flat)
+
+![Pipeline](https://github.com/Bruno-Furtado/trucking-cost-pipeline/actions/workflows/pipeline.yml/badge.svg)
+
+</div>
+
+<br/>
 
 PySpark + Delta Lake pipeline that ingests 25 years of WTI and US diesel prices, models their lag, and ranks the largest historical fuel shocks.
 
-![Pipeline](https://github.com/Bruno-Furtado/trucking-cost-pipeline/actions/workflows/pipeline.yml/badge.svg)
+---
 
 ## Why this exists
 
@@ -123,4 +133,10 @@ This project is for educational and portfolio purposes. Data is subject to sourc
 
 ## License
 
-MIT
+This project is licensed under the [MIT License](./LICENSE).
+
+---
+
+<div align="center">
+  <sub>Made with ♥ in Curitiba 🌲 ☔️</sub>
+</div>
