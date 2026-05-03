@@ -12,6 +12,8 @@
 
 PySpark + Delta Lake pipeline that ingests 25 years of WTI and US diesel prices, models their lag, and ranks the largest historical fuel shocks.
 
+For more details on how it was built, read the full <a href="https://brunofurtado.dev/en/blog/diesel-monitor-spark-delta-lake/" target="_blank" rel="noopener noreferrer">write-up</a>.
+
 ---
 
 ## Why this exists
