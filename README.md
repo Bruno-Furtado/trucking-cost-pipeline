@@ -12,13 +12,13 @@
 
 PySpark + Delta Lake pipeline that ingests 25 years of WTI and US diesel prices, models their lag, and ranks the largest historical fuel shocks.
 
-For more details on how it was built, read the full <a href="https://brunofurtado.dev/en/blog/diesel-monitor-spark-delta-lake/" target="_blank" rel="noopener noreferrer">write-up</a>.
-
 ---
 
 ## Why this exists
 
 Diesel is the single largest variable cost for US trucking carriers. Retail diesel prices follow WTI crude with a delay, but the exact lag and the magnitude of pass-through are not constants. This pipeline answers three concrete questions: how have the two prices moved together over 25 years, how many days does diesel lag WTI, and which historical events produced the largest 4-week price shocks.
+
+> For more details on how it was built, read the full <a href="https://brunofurtado.dev/en/blog/diesel-monitor-spark-delta-lake/" target="_blank" rel="noopener noreferrer">write-up</a>.
 
 ## Live demo
 
