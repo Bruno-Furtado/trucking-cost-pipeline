@@ -124,19 +124,19 @@ jobs:
 
       - name: Copy exports to personal-page
         run: |
-          mkdir -p personal-page/public/data/trucking-cost
-          cp "${DATA_ROOT}"/exports/*.json personal-page/public/data/trucking-cost/
+          mkdir -p personal-page/public/data/diesel-monitor
+          cp "${DATA_ROOT}"/exports/*.json personal-page/public/data/diesel-monitor/
 
       - name: Commit and push if changed
         working-directory: personal-page
         run: |
           git config user.name "trucking-cost-pipeline-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add public/data/trucking-cost/
+          git add public/data/diesel-monitor/
           if git diff --staged --quiet; then
             echo "No changes to commit."
           else
-            DATA_THROUGH=$(python -c "import json; print(json.load(open('public/data/trucking-cost/manifest.json'))['data_through'])")
-            git commit -m "data: update trucking-cost data through ${DATA_THROUGH}"
+            DATA_THROUGH=$(python -c "import json; print(json.load(open('public/data/diesel-monitor/manifest.json'))['data_through'])")
+            git commit -m "data: update diesel-monitor data through ${DATA_THROUGH}"
             git push
           fi
